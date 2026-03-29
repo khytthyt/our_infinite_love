@@ -353,7 +353,7 @@
 
         <div class="interactive-section">
             <div class="video-wrapper">
-                <h3 style="font-family: 'Dancing Script'; font-size: 2.2rem; color: #fff; text-align: center; margin-bottom: 20px;">👋----------------✊</h3>
+                <h3 style="font-family: 'Dancing Script'; font-size: 2.2rem; color: #fff; text-align: center; margin-bottom: 20px;">👋-မည်းနေရင် အဲ့ပေါ်ကို ထောက်လိုက်ပါ-✊</h3>
                 <div class="custom-player">
                     <video id="myVid" src="our_love_music.mp4" loop poster="https://via.placeholder.com/800x450/0a0515/bc8cf2?text=Our+Love+Story"></video>
                     <div class="player-controls">
@@ -552,7 +552,7 @@
         function openLetter() {
             const env = document.getElementById('envArea');
             if(env) env.classList.add('open-mode');
-            const notes = ["မင်းနဲ့တွေ့ရတာ ငါ့ဘဝရဲ့ ကံအကောင်းဆုံးပဲ။", "ဘယ်တော့မှ လက်မလွှတ်ကြေးနော်။", "သဲသဲလေးက ကိုကို့အတွက် အရာရာပဲ။", "နေ့တိုင်း ပိုတိုးလို့ ချစ်နေမယ်။"];
+            const notes = ["သဲသဲနဲ့တွေ့ရတာ ကိုကို့ဘဝရဲ့ ကံအကောင်းဆုံး အရာပဲ။", "ဘယ်တော့မှ လက်မလွှတ်ကြေးနော်။", "သဲသဲလေးက ကိုကို့အတွက် အရာရာပဲ။", "နေ့တိုင်း ပိုတိုးလို့ ချစ်နေမယ်။"];
             document.getElementById('memory-text').innerText = notes[Math.floor(Math.random()*notes.length)];
             setTimeout(() => { document.getElementById('overlay').style.display = 'block'; document.getElementById('fullLetter').classList.add('show'); }, 1100);
         }
