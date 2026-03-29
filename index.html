@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Infinity Love</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600;800&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <style>
+        :root {
+            --bg: #0a0515;
+            --text: #e0d1f5;
+            --accent: #bc8cf2;
+            --neon: #9d50bb;
+            --card: rgba(255, 255, 255, 0.03);
+            --file-base: #4c1d95; 
+            --file-flap: #7c3aed; 
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { scroll-behavior: smooth; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; overflow-x: hidden; position: relative; }
+
+        body::before {
+            content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(157, 80, 187, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at center, rgba(76, 29, 149, 0.1) 0%, transparent 60%);
+            animation: bgGlow 20s infinite linear; z-index: -1;
+        }
+        @keyframes bgGlow { 0% { transform: translate(0,0); } 50% { transform: translate(10%, 10%); } 100% { transform: translate(0,0); } }
+
+        /* Enhanced Scroll Down Indicators */
+        .scroll-hint {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Orbitron';
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            color: var(--accent);
+            opacity: 0.6;
+            z-index: 100;
+            text-transform: uppercase;
+            writing-mode: vertical-rl;
+            animation: pulseHint 2.5s infinite ease-in-out;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(188, 140, 242, 0.4);
+        }
+        .scroll-left { left: 15px; }
+        .scroll-right { right: 15px; transform: translateY(-50%) rotate(180deg); }
+
+        
+        
+        @keyframes pulseHint {
+            0%, 100% { opacity: 0.3; transform: translateY(-50%) scale(1); }
+            50% { opacity: 1; transform: translateY(-42%) scale(1.1); }
+        }
+
+        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9500; transition: 0.8s; }
+        .miui-text { background: linear-gradient(90deg, #ff0055, #7c3aed, #00f2ff, #ff0055); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: miuiFlow 3s linear infinite; }
+        .boot-main { font-family: 'Dancing Script', cursive; font-size: 4.5rem; opacity: 0; animation: fadeIn 0.8s forwards ease-out, miuiFlow 3s linear infinite; }
+        .boot-bottom { position: absolute; bottom: 60px; text-align: center; opacity: 0; animation: fadeIn 0.8s 0.3s forwards ease-out; }
+        .boot-bottom span { color: #888; font-size: 0.75rem; letter-spacing: 5px; font-family: 'Poppins'; }
+        .boot-bottom h4 { margin: 8px 0 0; font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 3px; }
+
+        @keyframes miuiFlow { 0% { background-position: 0% center; } 100% { background-position: 300% center; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        #boot-screen.exit { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+
+        .page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; position: relative; }
+        .header-text { text-align: center; margin-bottom: 40px; }
+        .header-text h3 { font-family: 'Dancing Script'; font-size: 3.5rem; margin: 0; background: linear-gradient(to right, var(--accent), #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-text p { font-family: 'Orbitron'; font-size: 1.4rem; font-weight: 600; margin: 15px 0; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+
+        /* Timer Section */
+        .timer-main-group { background: var(--glass); padding: 30px; border-radius: 40px; border: 1px solid var(--glass-border); backdrop-filter: blur(15px); margin-bottom: 60px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .timer-container { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        .timer-box { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 90px; height: 95px; border-radius: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); position: relative; overflow: hidden; }
+        
+        .digit-container { display: flex; font-family: 'Orbitron'; font-size: 1.8rem; color: #fff; }
+        .digit { display: inline-block; min-width: 22px; text-align: center; transition: color 0.3s; }
+
+        .digit-pop {
+            animation: bounceDigit 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--accent);
+            text-shadow: 0 0 12px var(--accent);
+        }
+
+        @keyframes bounceDigit {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.2); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .timer-box p { font-size:0.55rem; color:var(--accent); margin: 5px 0 0; letter-spacing: 1px; font-weight: 600; }
+
+        .main-row { display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%; max-width: 1200px; gap: 80px; flex-wrap: wrap; margin-bottom: 80px; }
+        .miui-infinity { font-size: 7rem; text-align: center; background: linear-gradient(90deg, #ff0055, #7c3aed, #00f2ff, #ff0055); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: miuiFlow 4s linear infinite; text-shadow: 0 0 20px rgba(124, 58, 237, 0.5); }
+        
+        .infinite-text { font-family: 'Dancing Script'; font-size: 1.8rem; text-align: center; margin-top: -10px; background: linear-gradient(90deg, #00f2ff, #7c3aed, #ff0055, #00f2ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: miuiFlow 3s linear infinite; }
+
+        .slider-outer { position: relative; width: 100%; max-width: 320px; }
+        .swiper { border-radius: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--glass-border); }
+        .swiper-slide { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); padding: 40px 20px; backdrop-filter: blur(15px); min-height: 200px; display: flex; align-items: center; justify-content: center; }
+        .slide-text { font-size: 1.4rem; font-family: 'Dancing Script'; color: #fff; text-align: center; line-height: 1.6; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+
+        .ios-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); z-index: 10; cursor: pointer; transition: 0.4s; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.75rem; font-weight: 600; }
+        .ios-btn::before { content: 'နှိပ်'; }
+        .ios-btn:hover { background: var(--accent); border-color: #fff; color: var(--bg); transform: translateY(-50%) scale(1.1); box-shadow: 0 0 15px var(--accent); }
+        .prev-ios { left: -70px; } .next-ios { right: -70px; }
+
+        .env-area { position: relative; display: flex; flex-direction: column; align-items: center; width: 220px; perspective: 1000px; }
+        .env-wrapper { position: relative; width: 160px; height: 110px; cursor: pointer; transition: 0.6s; transform: rotate(8deg); }
+        .file-body { position: relative; width: 100%; height: 100%; background: var(--file-base); border-radius: 4px 12px 4px 4px; z-index: 2; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .file-flap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--file-flap); border-radius: 4px 12px 4px 4px; transform-origin: bottom; transition: 0.6s; z-index: 3; }
+        .paper-content { position: absolute; bottom: 5px; left: 5%; width: 90%; height: 95%; background: #fff; border-radius: 2px; z-index: 1; transition: 0.9s; display: flex; justify-content: center; align-items: center; color: #ff0055; font-size: 2rem; }
+        .env-area.open-mode .file-flap { transform: rotateX(-120deg); }
+        .env-area.open-mode .paper-content { transform: translateY(-200px) scale(5); opacity: 0; }
+
+        .read-note-btn { margin-top: 25px; padding: 12px 30px; border-radius: 30px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; font-weight: 600; transition: 0.3s; letter-spacing: 1px; }
+        .read-note-btn:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 15px var(--accent); }
+
+        .full-page-letter { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 95vw; height: 90vh; max-width: 900px; background: #fff; color: #111; padding: 40px; border-radius: 12px; opacity: 0; z-index: 8000; visibility: hidden; transition: 0.7s; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .full-page-letter.show { opacity: 1; transform: translate(-50%, -50%) scale(1); visibility: visible; }
+        .full-page-letter h1 { font-family: 'Dancing Script'; font-size: 3rem; color: #4c1d95; }
+        .close-note-btn { padding: 12px 40px; border-radius: 30px; border: none; background: linear-gradient(45deg, #4c1d95, #7c3aed); color: #fff; cursor: pointer; font-weight: 700; letter-spacing: 1px; box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4); transition: 0.3s; margin: 20px 0; }
+        .close-note-btn:hover { transform: scale(1.05); }
+
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 7500; backdrop-filter: blur(12px); }
+
+        .grid-3 { display: flex; flex-direction: row; justify-content: center; width: 100%; max-width: 1100px; gap: 30px; padding: 60px 0; flex-wrap: wrap; }
+        .info-card { background: var(--glass); padding: 30px; border-radius: 25px; border: 1px solid var(--glass-border); text-align: center; flex: 1; min-width: 280px; backdrop-filter: blur(10px); transition: 0.3s; position: relative; cursor: pointer; user-select: none; }
+        .info-card:hover { transform: translateY(-5px); border-color: rgba(188, 140, 242, 0.3); }
+        .info-card div { font-weight: 800; margin-bottom: 15px; color: var(--accent); font-size: 1.2rem; text-transform: uppercase; }
+        .info-card p { font-size: 0.95rem; line-height: 1.7; color: #ccb; margin: 0; }
+
+        /* Reaction Styles */
+        .react-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-top: 15px; min-height: 30px; }
+        .react-bubble { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 2px 8px; font-size: 1.2rem; cursor: pointer; transition: 0.2s; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-family: Arial, sans-serif; }
+        .react-bubble:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .emoji-picker { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1a1033; border: 1px solid var(--accent); border-radius: 20px; padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; }
+        .emoji-option { font-size: 1.5rem; cursor: pointer; transition: 0.2s; font-family: Arial, sans-serif; }
+        .emoji-option:hover { transform: scale(1.3); }
+
+        .react-hint { color: var(--accent); font-size: 0.85rem; margin-top: 20px; opacity: 0.8; font-style: italic; letter-spacing: 1px; }
+
+        .footer { padding: 100px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; background: linear-gradient(to top, rgba(10, 5, 21, 1), rgba(10, 5, 21, 0)); width: 100%; }
+        .cool-love-text { font-family: 'Dancing Script'; font-size: 2.8rem; background: linear-gradient(to right, #ff0055, #fff, #7c3aed, #ff0055); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: miuiFlow 3s linear infinite; margin-bottom: 10px; }
+        .footer-note { font-size: 0.9rem; color: #888; max-width: 600px; line-height: 1.6; font-style: italic; margin-bottom: 20px; }
+        .heart-btn { background: linear-gradient(45deg, #ff0055, #9d50bb); border: none; color: white; padding: 16px 50px; border-radius: 40px; font-weight: 800; cursor: pointer; transition: 0.4s; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.3); }
+        .heart-btn:hover { transform: scale(1.05) translateY(-2px); }
+        .gemini-credits { font-family: 'Orbitron'; font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-top: 40px; opacity: 0.6; }
+
+        .particle { position: fixed; pointer-events: none; z-index: 9999; animation: bloomFade 4s ease-out forwards; }
+        @keyframes bloomFade { 0% { transform: translate(0, 0) scale(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(var(--ts)) rotate(var(--tr)); opacity: 0; } }
+
+        .interactive-section { min-height: 80vh; width: 100%; max-width: 1200px; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 50px; padding: 60px 20px; flex-wrap: wrap; margin-bottom: 80px; }
+        .video-wrapper { flex: 0 0 70%; max-width: 800px; }
+        .custom-player { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; position: relative; border: 2px solid var(--glass-border); }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .player-controls { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.8)); display: flex; align-items: center; justify-content: center; padding: 15px; gap: 25px; opacity: 0; transition: 0.3s; z-index: 2; }
+        .custom-player:hover .player-controls { opacity: 1; }
+        .ctrl-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.3rem; transition: 0.2s; opacity: 0.8; }
+        .ctrl-btn:hover { opacity: 1; transform: scale(1.1); }
+        #volumeBar { width: 80px; cursor: pointer; accent-color: var(--accent); }
+        #videoTime { font-family: 'Orbitron'; font-size: 0.8rem; color: #ccc; min-width: 45px; }
+
+        .cube-wrapper { flex: 0 0 20%; display: flex; flex-direction: column; justify-content: center; align-items: center; perspective: 1000px; min-width: 250px; height: 350px; cursor: grab; }
+        .cube { position: relative; width: 150px; height: 150px; transform-style: preserve-3d; transform: rotateX(-20deg) rotateY(20deg); margin-bottom: 30px; }
+        .cube.auto-rotate { animation: cubeRotate 15s infinite linear; }
+        @keyframes cubeRotate { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
+        .cube-face { position: absolute; width: 150px; height: 150px; border: 1px solid rgba(188, 140, 242, 0.5); background: rgba(188, 140, 242, 0.1); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.85rem; font-weight: 600; color: #fff; padding: 10px; user-select: none; }
+        .front { transform: translateZ(75px); } .back { transform: rotateY(180deg) translateZ(75px); }
+        .right { transform: rotateY(90deg) translateZ(75px); } .left { transform: rotateY(-90deg) translateZ(75px); }
+        .top { transform: rotateX(90deg) translateZ(75px); } .bottom { transform: rotateX(-90deg) translateZ(75px); }
+  
+
+        .double_click {
+            font-size: small;
+            text-align: center;
+            color: #333;
+            padding: 10%;
+    
+
+        }
+        .cube-hint-box {
+            background: white;
+            border: 1px solid purple;
+            backdrop-filter: blur(5px);
+            font-family: sans-serif;
+            padding: 8px 18px;
+            border-radius: 15px;
+            font-size: 100%;
+            color: purple;
+            text-align: center;
+            opacity: 0.7;
+            animation: pulseHintBox 2s infinite ease-in-out;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        @keyframes pulseHintBox {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.03); }
+        }
+
+        @media (max-width: 992px) { 
+            .miui-infinity { font-size: 5rem; } 
+            .interactive-section { flex-direction: column; } 
+            .scroll-hint { font-size: 0.75rem; letter-spacing: 3px; opacity: 0.4; } 
+            .scroll-left { left: 8px; }
+            .scroll-right { right: 8px; }
+            .cube-hint-box { font-size: 0.75rem; padding: 6px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scroll-hint scroll-left">scroll down ——</div>
+    <div class="scroll-hint scroll-right">scroll down——</div>
+
+    <div id="boot-screen">
+        <div class="boot-main miui-text">Beyond FOREVER<br>ထာဝရထက်ပို၍</div>
+        <div class="boot-bottom">
+            <span>POWERED BY</span>
+            <h4 class="miui-text">YOU</h4>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="closeLetter()"></div>
+
+    <section class="page" id="home">
+        <div class="header-text">
+            <h3>To My Everything,</h3>
+            <p><span id="total-days-label">0</span> Days of Loving You</p>
+        </div>
+        
+        <div class="timer-main-group">
+            <div class="timer-container">
+                <div class="timer-box" id="box-y"> <div class="digit-container" id="y"></div> <p>YEAR</p> </div>
+                <div class="timer-box" id="box-mon"> <div class="digit-container" id="mon"></div> <p>MONTHS</p> </div>
+                <div class="timer-box" id="box-d"> <div class="digit-container" id="d"></div> <p>DAYS</p> </div>
+                <div class="timer-box" id="box-h"> <div class="digit-container" id="h"></div> <p>HOURS</p> </div>
+                <div class="timer-box" id="box-m"> <div class="digit-container" id="m"></div> <p>MINS</p> </div>
+                <div class="timer-box" id="box-s"> <div class="digit-container" id="s"></div> <p>SECS</p> </div>
+            </div>
+        </div>
+
+        <div class="main-row">
+            <div class="infinity-col">
+                <div class="miui-infinity">∞</div>
+                <div class="infinite-text">Infinity and Beyond</div>
+            </div>
+
+            <div class="slider-outer">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><p class="slide-text">သဲသဲက ကိုကို့ရဲ့ ကမ္ဘာကြီးပါ ❤️</p></div>
+                        <div class="swiper-slide"><p class="slide-text">ကိုကို့ဘဝရဲ့ ပျော်ရွှင့်မှုလေး ✨</p></div>
+                        <div class="swiper-slide"><p class="slide-text">ကိုကိုတို့ အတူတူ အိုမင်းသွားကြမယ်နော်။ 🥰</p></div>
+                        <div class="swiper-slide"><p class="slide-text">နေ့တိုင်း အချိန်တိုင်း စက္ကန့်တိုင်း ပိုပိုချစ်လာရသူလေး။ 🌸</p></div>
+                        <div class="swiper-slide"><p class="slide-text">ကိုကို့ရဲ့ ထာဝရအပိုင်လေး။ 💖</p></div>
+                    </div>
+                </div>
+                <div class="ios-btn prev-ios"></div>
+                <div class="ios-btn next-ios"></div>
+            </div>
+
+            <div class="env-area" id="envArea">
+                <div class="env-wrapper" onclick="openLetter()">
+                    <div class="file-body">
+                        <div class="paper-content">❤️</div>
+                        <div class="file-flap"></div>
+                    </div>
+                </div>
+                <button class="read-note-btn" onclick="openLetter()">Tap to Read Note</button>
+            </div>
+        </div>
+
+        <div class="full-page-letter" id="fullLetter">
+            <h1>Telegram မှ စာသား</h1>
+            <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <p id="memory-text" style="font-weight: 800; color: #4c1d95; font-size: 1.6rem; margin-bottom: 20px;"></p>
+                <p style="font-size: 1.1rem; max-width: 80%; color: #333; line-height: 1.6; text-align: left;">
+                    သို့............ချစ်ရပါသော<br>
+
+ကိုကိုရဲ့ သဲသဲလေးဆီသို့<br>
+ဘာလိုလိုနဲ့ နောက်ဆုံးတော့ Season 1 လေး ဇာတ်သိမ်းသွားပြီပေ့ါ။<br>
+ဘာတွေပဲဖြစ်ဖြစ် Season 2 ကို ပြန်စနိုင်အောင် ကြိုးစားမှာပါနော် သဲသဲလေးရေ။<br>
+ဟူးးးးးးး..............<br>
+ကိုကို့ဘဝထဲကို ဝင်လာတဲ့ ပျော်ရွှင်မှုလေး ပြန်ထွက်သွားပြီပေ့ါ...<br>
+ဘာပဲဖြစ်ဖြစ် ‌ဟောဒီက ကိုကို့ရဲ့ ပျော်ရွှင်မှုလေးကို ကိုကို့ဘဝထဲ ပြန်ခေါ်ပါ့မယ်<br>
+ဒီတခေါက်ခွဲရတာက ၄ နှစ် ၅ နှစ် ကြာနိုင်ပေမဲ့ နောက်တခါ ပြန်ဆုံရင်တော့ တသက်လုံးအတွက်ပဲနော်<br>
+ဘယ်တော့မှာ မခွဲတော့ဘူး<br>
+သဲသဲလေး ဒီဇင်ဘာတုန်းက ပြောတဲ့စာတွေလိုပဲ ကိုကိုလည်း သဲသဲလေးနဲ့ပဲ ဘဝကို ဖြတ်သန်းချင်တော့တယ်<br>
+ကျန်တာတွေ ရှုပ်ထွေးမဲ့ဟာတွေ ဘာမှ မလုပ်တော့ဘူး<br>
+ သဲသဲလေးနဲ့ပဲ ပျော်စရာကောင်းတဲ့ မိသားစုဘဝလေးကို တည်ဆောက်ချင်တယ်<br>
+သဲသဲလေးနဲ့ပဲ တသက်လုံး နေထိုင်သွားမယ်<br>
+အရင်ကပြောခဲ့တဲ့ဟာလေးတွေလည်း လုပ်ကြမယ်<br>
+နောက်လည်း ပျော်ရွှင်စရာအသစ်လေးတွေ ဖန်တီးမယ်<br>
+ပြီးတော့ ခုက ကျောင်းပိတ်သွားတော့ ဘာမှ မပေးနိုင်တာ sorry ပါ‌နော်<br>
+ဒါကြောင့် ဒါလေးပဲ စီစဥ်လိုက်တာပါ <br>
+နောက်ကျရင်တော့ ခြေချစရာနေရာမရှိအောင် သဲသဲလေးကို ပေးစရာတွေရှိပါတယ် ဟဲဟဲ<br>
+ပြီးတော့ သဲသဲလေး လိုချင်တာ မှန်သမျှလည်း ဖြည့်ဆည်းပေးပါ့မယ်နော်<br>
+ပြီးတော့ သဲသဲလေး ပေးထားတဲ့ စာလေးကိုလည်း နောက်တချိန်မှာ တူတူပြန်ဖတ်ကြတာပေ့ါ<br>
+ခု ကိုကိုပို့ထားတဲ့စာကတော့ အဲ့အချိန်ဘယ်လိုဖြစ်နေမလဲ အပေါ်မူတည်တာပေ့ါ <br>
+
+နှုတ်ဆက်ပါတယ်နော် သဲသဲလေး‌ရေ.......<br>
+တနေ့ကျရင် ပြန်ဆုံကြမယ်<br>
+အဲ့အချိန် ပြန်ဆုံရင် ဘယ်တော့မှ ပြန်မခွဲတော့ဘူးနော်<br>
+
+ဘိုင့်ဘိုင်<br>
+ချစ်တယ် ချစ်တယ် များရီးချစ်တယ်နော် ကိုကို့ရဲ့ သဲသဲလေးရေ<br>
+အာဘွား အာဘွား<br>
+
+သဲသဲရဲ့ ကောင်လေး<br>
+                </p>
+                <button class="close-note-btn" onclick="closeLetter()">CLOSE NOTE</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" style="justify-content: flex-start; padding-top: 80px;">
+        <h2 style="font-family: 'Dancing Script'; font-size: 2.8rem; color: var(--accent); margin-bottom: 10px;">My Promises</h2>
+        <div class="grid-3">
+            <div class="info-card" data-id="1">
+                <div>The Promise</div>
+                <p>ဘယ်လိုအခက်အခဲတွေပဲ ကြုံရပါစေ၊ ကိုကို့ဘက်က သဲသဲလက်ကို အမြဲမြဲမြဲဆုပ်ကိုင်ထားမယ်လို့ ကတိပေးပါတယ်။</p>
+                <p class="double_click" style="text-align: center; font-size: small; color: #555; padding-top: 5%;">၂ ခါနှိပ် ပြီး‌တော့ ကြာကြာဖိ</p>
+                <div class="react-container"></div>
+                <div class="emoji-picker"></div>
+            </div>
+            <div class="info-card" data-id="2">
+                <div>Under the Same Sky</div>
+                <p>ကိုကိုတို့ဝေးသွားခဲ့ရင်တောင် ဘာအကြောင်းကြောင့်ပဲဖြစ်ဖြစ် သဲသဲလေးကို ရအောင် ပြန်ရှာမှာပါ။</p>
+                <p class="double_click" style="text-align: center; font-size: small; color: #555; padding-top: 5%;">၂ ခါနှိပ် သို့ ကြာကြာဖိ</p>
+                <div class="react-container"></div>
+                <div class="emoji-picker"></div>
+            </div>
+            <div class="info-card" data-id="3">
+                <div>Every Beat</div>
+                <p>ကိုကို့နှလုံးခုန်သံတိုင်းက သဲသဲလေးအတွက်ပါပဲ။</p>
+                <p class="double_click" style="text-align: center; font-size: small; color: #555; padding-top: 5%;">၂ ခါနှိပ် သို့ ကြာကြာဖိ</p>
+                <div class="react-container"></div>
+                <div class="emoji-picker"></div>
+            </div>
+        </div>
+        <p class="react-hint">react တွေ တခါထက်ပိုလုပ်လို့ရအောင်လုပ်ထားတယ်နော် ဟဲဟဲ😁</p>
+
+        <div class="interactive-section">
+            <div class="video-wrapper">
+                <h3 style="font-family: 'Dancing Script'; font-size: 2.2rem; color: #fff; text-align: center; margin-bottom: 20px;">👋----------------✊</h3>
+                <div class="custom-player">
+                    <video id="myVid" src="our_lover_music.mp4" loop poster="https://via.placeholder.com/800x450/0a0515/bc8cf2?text=Our+Love+Story"></video>
+                    <div class="player-controls">
+                        <button class="ctrl-btn" onclick="vidBack()">⏪</button>
+                        <button class="ctrl-btn" onclick="toggleVid()" id="playIcon">▶️</button>
+                        <button class="ctrl-btn" onclick="vidForward()">⏩</button>
+                        <input type="range" id="volumeBar" min="0" max="1" step="0.1" value="1">
+                        <span id="videoTime">00:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cube-wrapper" id="cubeScene">
+                <div class="cube auto-rotate" id="cube">
+                    <div class="cube-face front">Thiri Phyo Wai</div>
+                    <div class="cube-face back">သဲသဲလေး</div>
+                    <div class="cube-face right">ချစ်ဆုံးလေး</div>
+                    <div class="cube-face left">ချစ်မဝလေး</div>
+                    <div class="cube-face top">❤️ 🥰 💖</div>
+                    <div class="cube-face bottom">Infinity Love</div>
+                </div>
+                <div class="cube-hint-box" id="cubeHint">u can move, sweetie</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <span class="cool-love-text">I love you infinitely... ❤️</span>
+            <p class="footer-note">"ကိုကိုတို့ရဲ့ အချစ်ဇာတ်လမ်းလေးက ဒီ Website လေးထက် ပိုပြီး ဆန်းကြယ်ပါတယ်။ အချိန်တွေ ဘယ်လောက်ပဲ ကုန်လွန်ပါစေ... သဲသဲအပေါ်ထားတဲ့ ကိုကို့အချစ်တွေကတော့ ဘယ်တော့မှ ပြောင်းလဲမှာ မဟုတ်ပါဘူး သဲသဲလေးရေ..."</p>
+            <button onclick="bloomHearts(event)" class="heart-btn">CLICK ✨❤️</button>
+            <div class="gemini-credits">GENERATED WITH GEMINI AI | DESIGNED FOR YOU, MY LOVE</div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const anniversary = new Date(2024, 11, 4, 0, 0, 0); 
+        let lastStrings = { y: "", mon: "", d: "", h: "", m: "", s: "" };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setInterval(update, 1000); 
+            update();
+            setTimeout(() => { document.getElementById('boot-screen').classList.add('exit'); }, 2000); 
+            initReactions();
+        });
+
+        const swiper = new Swiper(".mySwiper", { loop: true, effect: "cube", grabCursor: true, cubeEffect: { shadow: true }, speed: 1000, navigation: { nextEl: ".next-ios", prevEl: ".prev-ios" } });
+
+        const v = document.getElementById('myVid');
+        const playIcon = document.getElementById('playIcon');
+        const vol = document.getElementById('volumeBar');
+        const vTime = document.getElementById('videoTime');
+
+        function toggleVid() { if(v.paused) { v.play(); playIcon.innerText = '⏸️'; } else { v.pause(); playIcon.innerText = '▶️'; } }
+        function vidForward() { v.currentTime += 5; }
+        function vidBack() { v.currentTime -= 5; }
+        vol.addEventListener('input', (e) => { v.volume = e.target.value; });
+        v.addEventListener('timeupdate', () => { let m = Math.floor(v.currentTime / 60); let s = Math.floor(v.currentTime % 60); vTime.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`; });
+
+        function getDiffData() {
+            const now = new Date();
+            const diffMs = now - anniversary;
+            const totalDays = Math.floor(diffMs / 864e5);
+            let y = now.getFullYear() - anniversary.getFullYear();
+            let mon = now.getMonth() - anniversary.getMonth();
+            let d = now.getDate() - anniversary.getDate();
+            if (d < 0) { mon--; let prev = new Date(now.getFullYear(), now.getMonth(), 0); d += prev.getDate(); }
+            if (mon < 0) { y--; mon += 12; }
+            return { y, mon, d, h: Math.floor((diffMs/36e5)%24), m: Math.floor((diffMs/6e4)%60), s: Math.floor((diffMs/1e3)%60), totalDays };
+        }
+
+        function update() {
+            const data = getDiffData();
+            const f = (n) => (n < 10 ? "0" + n : n.toString());
+            
+            ['y','mon','d','h','m','s'].forEach(id => {
+                const container = document.getElementById(id);
+                const currentStr = f(data[id]);
+                const lastStr = lastStrings[id];
+
+                if (currentStr !== lastStr) {
+                    container.innerHTML = ""; 
+                    for (let i = 0; i < currentStr.length; i++) {
+                        const span = document.createElement("span");
+                        span.className = "digit";
+                        span.innerText = currentStr[i];
+                        if (lastStr && currentStr[i] !== lastStr[i]) {
+                            span.classList.add("digit-pop");
+                        }
+                        container.appendChild(span);
+                    }
+                    lastStrings[id] = currentStr;
+                }
+            });
+
+            const totalLbl = document.getElementById('total-days-label');
+            if(totalLbl) totalLbl.innerText = data.totalDays;
+        }
+
+        // --- REACTION LOGIC ---
+        const emojis = ['❤️', '💖', '🥰', '😍', '✨', '🌸', '😘', '💓'];
+        
+        function initReactions() {
+            document.querySelectorAll('.info-card').forEach(card => {
+                const picker = card.querySelector('.emoji-picker');
+                const container = card.querySelector('.react-container');
+
+                // Create picker options
+                emojis.forEach(emoji => {
+                    const span = document.createElement('span');
+                    span.className = 'emoji-option';
+                    span.innerText = emoji;
+                    span.onclick = (e) => {
+                        e.stopPropagation();
+                        addReact(container, emoji);
+                        picker.style.display = 'none';
+                    };
+                    picker.appendChild(span);
+                });
+
+                // Double Click for Love React
+                card.addEventListener('dblclick', (e) => {
+                    addReact(container, '❤️');
+                });
+
+                // Long Press / Right Click for Picker
+                let pressTimer;
+                card.addEventListener('mousedown', () => pressTimer = setTimeout(() => picker.style.display = 'grid', 500));
+                card.addEventListener('mouseup', () => clearTimeout(pressTimer));
+                card.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    picker.style.display = 'grid';
+                });
+
+                // Hide picker on click outside
+                document.addEventListener('click', () => picker.style.display = 'none');
+            });
+        }
+
+        function addReact(container, emoji) {
+            const existing = Array.from(container.children).find(c => c.innerText === emoji);
+            if (existing) {
+                existing.remove(); // Remove if already exists (Telegram style)
+            } else {
+                const bubble = document.createElement('div');
+                bubble.className = 'react-bubble';
+                bubble.innerText = emoji;
+                bubble.onclick = (e) => {
+                    e.stopPropagation();
+                    bubble.remove();
+                };
+                container.appendChild(bubble);
+            }
+        }
+
+        // --- CUBE LOGIC ---
+        const cube = document.getElementById('cube');
+        const scene = document.getElementById('cubeScene');
+        const hint = document.getElementById('cubeHint');
+        let isDragging = false, startX, startY, rotateX = -20, rotateY = 20, autoRotateTimer;
+
+        function stopAutoRotate() { cube.classList.remove('auto-rotate'); clearTimeout(autoRotateTimer); }
+        function startAutoRotate() { autoRotateTimer = setTimeout(() => { cube.classList.add('auto-rotate'); }, 3000); }
+
+        function handleDragStart(e) {
+            isDragging = true;
+            stopAutoRotate();
+            const pageX = e.pageX || e.touches[0].pageX;
+            const pageY = e.pageY || e.touches[0].pageY;
+            startX = pageX;
+            startY = pageY;
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            const pageX = e.pageX || e.touches[0].pageX;
+            const pageY = e.pageY || e.touches[0].pageY;
+            rotateY += (pageX - startX) * 0.5;
+            rotateX -= (pageY - startY) * 0.5;
+            cube.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            startX = pageX;
+            startY = pageY;
+        }
+
+        function handleDragEnd() { isDragging = false; startAutoRotate(); }
+
+        scene.addEventListener('mousedown', handleDragStart);
+        hint.addEventListener('mousedown', handleDragStart); // Bind to hint box too
+        window.addEventListener('mousemove', handleDragMove);
+        window.addEventListener('mouseup', handleDragEnd);
+
+        scene.addEventListener('touchstart', handleDragStart);
+        hint.addEventListener('touchstart', handleDragStart);
+        scene.addEventListener('touchmove', handleDragMove);
+        window.addEventListener('touchend', handleDragEnd);
+
+        function openLetter() {
+            const env = document.getElementById('envArea');
+            if(env) env.classList.add('open-mode');
+            const notes = ["မင်းနဲ့တွေ့ရတာ ငါ့ဘဝရဲ့ ကံအကောင်းဆုံးပဲ။", "ဘယ်တော့မှ လက်မလွှတ်ကြေးနော်။", "သဲသဲလေးက ကိုကို့အတွက် အရာရာပဲ။", "နေ့တိုင်း ပိုတိုးလို့ ချစ်နေမယ်။"];
+            document.getElementById('memory-text').innerText = notes[Math.floor(Math.random()*notes.length)];
+            setTimeout(() => { document.getElementById('overlay').style.display = 'block'; document.getElementById('fullLetter').classList.add('show'); }, 1100);
+        }
+        function closeLetter() { document.getElementById('fullLetter').classList.remove('show'); document.getElementById('overlay').style.display = 'none'; setTimeout(() => { document.getElementById('envArea').classList.remove('open-mode'); }, 400); }
+
+        function bloomHearts() {
+            const items = ['❤️', '💖', '🌸', '✨', '🥰'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div');
+                    p.className = 'particle'; p.innerHTML = items[Math.floor(Math.random() * items.length)];
+                    p.style.left = '50vw'; p.style.top = '85vh';
+                    p.style.fontSize = `${Math.random() * 30 + 20}px`;
+                    const angle = Math.random() * Math.PI * 2, velocity = Math.random() * 800 + 300;
+                    p.style.setProperty('--tx', `${Math.cos(angle) * velocity}px`);
+                    p.style.setProperty('--ty', `${Math.sin(angle) * velocity - 200}px`);
+                    p.style.setProperty('--tr', `${Math.random() * 720}deg`);
+                    p.style.setProperty('--ts', `${Math.random() * 1.5 + 0.5}`);
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), 4000);
+                }, i * 15);
+            }
+        }
+    </script>
+</body>
+</html>
